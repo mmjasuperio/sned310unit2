@@ -1,0 +1,780 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>The K to 12 Language and Literacy Curriculum — Interactive Lessons</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Literata:opsz,wght@7..72,400;7..72,600;7..72,800&family=Kalam:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#F5F7F4; --surface:#FFFFFF; --ink:#1D2733; --muted:#566271;
+  --green:#1F5C4A; --green-ink:#FFFFFF; --green-soft:#E1EEE8;
+  --pad:#FCF3B4; --pad-line:#A6C1E2; --pad-margin:#D9536A; --pad-ink:#22324A;
+  --ok:#1D7348; --ok-soft:#DDF2E5; --bad:#A8322B; --bad-soft:#F9E1DE;
+  --border:#D5DCD6; --scale:1;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --paper:#111916; --surface:#1A2420; --ink:#E5ECE7; --muted:#A1AFA8;
+    --green:#6CC3A2; --green-ink:#0E1A15; --green-soft:#1D362D;
+    --pad:#302C17; --pad-line:#46587A; --pad-margin:#B5485A; --pad-ink:#F1EBC6;
+    --ok:#7BD6A1; --ok-soft:#173327; --bad:#FF9C92; --bad-soft:#3A1E1B;
+    --border:#2C3934;
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#111916; --surface:#1A2420; --ink:#E5ECE7; --muted:#A1AFA8;
+  --green:#6CC3A2; --green-ink:#0E1A15; --green-soft:#1D362D;
+  --pad:#302C17; --pad-line:#46587A; --pad-margin:#B5485A; --pad-ink:#F1EBC6;
+  --ok:#7BD6A1; --ok-soft:#173327; --bad:#FF9C92; --bad-soft:#3A1E1B;
+  --border:#2C3934;
+}
+*,*::before,*::after{box-sizing:inherit}
+html{font-size:calc(100% * var(--scale));scroll-padding-top:calc(env(safe-area-inset-top,0px) + 4.5rem)}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:"Literata",Georgia,"Times New Roman",serif;line-height:1.65;-webkit-text-size-adjust:100%}
+button{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--green);outline-offset:2px;border-radius:4px}
+img{max-width:100%}
+
+.wrap{max-width:52rem;margin:0 auto;padding:0 1.25rem}
+
+/* Header */
+header.top{padding:2.5rem 0 1.5rem}
+.top-grid{display:grid;grid-template-columns:1.1fr 1fr;gap:2rem;align-items:start}
+.course{color:var(--muted);font-size:.95rem;margin:0 0 .5rem}
+h1{font-size:clamp(2rem,5vw,3rem);line-height:1.08;margin:0 0 1rem;font-weight:800;letter-spacing:-.01em}
+.lede{font-size:1.1rem;margin:0 0 1.25rem;max-width:34rem}
+.tools{display:flex;gap:.5rem;flex-wrap:wrap}
+.tool{background:var(--surface);border:1px solid var(--border);border-radius:.5rem;padding:.4rem .8rem;cursor:pointer;font-size:.9rem}
+.tool:hover{border-color:var(--green)}
+
+/* Yellow pad */
+.pad{background-color:var(--pad);color:var(--pad-ink);font-family:"Kalam","Comic Sans MS",cursive;
+  font-size:1.15rem;line-height:2rem;padding:2rem 1.25rem 2rem 4rem;border-radius:2px;
+  background-image:
+    linear-gradient(to right,transparent 3rem,var(--pad-margin) 3rem,var(--pad-margin) calc(3rem + 2px),transparent calc(3rem + 2px)),
+    repeating-linear-gradient(to bottom,transparent 0,transparent calc(2rem - 1px),var(--pad-line) calc(2rem - 1px),var(--pad-line) 2rem);
+  box-shadow:0 1px 0 var(--border);position:relative}
+.pad h3,.pad p,.pad ol,.pad ul{margin:0;line-height:2rem}
+.pad h3{font-size:1.4rem;font-weight:700}
+.pad ol,.pad ul{padding-left:1.5rem}
+.pad a{color:inherit;text-decoration:none;border-bottom:2px solid var(--pad-margin)}
+.pad a:hover{background:rgba(217,83,106,.12)}
+.pad .done{text-decoration:line-through;text-decoration-color:var(--pad-margin);text-decoration-thickness:2px}
+
+/* Nav */
+nav.lessons{position:sticky;top:env(safe-area-inset-top,0px);z-index:10;background:var(--paper);border-bottom:1px solid var(--border)}
+.tabs{display:flex;gap:.25rem;overflow-x:auto;padding:.6rem 0;scrollbar-width:thin}
+.tab{flex:0 0 auto;border:1px solid transparent;background:none;border-radius:999px;padding:.4rem .9rem;cursor:pointer;font-size:.95rem;white-space:nowrap;color:var(--muted)}
+.tab b{font-weight:800;margin-right:.35rem}
+.tab[aria-selected="true"]{background:var(--green);color:var(--green-ink)}
+.tab:not([aria-selected="true"]):hover{border-color:var(--border);color:var(--ink)}
+.tab .tick{margin-left:.35rem}
+
+/* Lesson body */
+main{padding:2rem 0 4rem}
+.lesson-head{margin-bottom:2rem}
+.lesson-num{color:var(--green);font-weight:800;font-size:1rem;margin:0}
+h2{font-size:clamp(1.6rem,4vw,2.3rem);line-height:1.15;margin:.2rem 0 0;font-weight:800}
+h3.sec{font-size:1.35rem;line-height:1.3;margin:3rem 0 .5rem;font-weight:800}
+.sec-sub{color:var(--muted);margin:0 0 1rem}
+p{margin:0 0 1rem}
+.how{font-size:.92rem;color:var(--muted);margin:-.25rem 0 1rem;font-style:italic}
+
+.idea{border-left:6px solid var(--green);padding:.25rem 0 .25rem 1.25rem;margin:0 0 1.5rem}
+.idea .big{font-size:1.35rem;line-height:1.45;font-weight:600;margin:0 0 .75rem}
+.idea .ana{margin:0;color:var(--ink)}
+.idea .ana strong{color:var(--green)}
+
+ul.plain{margin:0 0 1rem;padding-left:1.25rem}
+ul.plain li{margin:.25rem 0}
+
+/* Reveal cards */
+.reveals{display:grid;grid-template-columns:repeat(auto-fit,minmax(15rem,1fr));gap:.75rem}
+details.rv{background:var(--surface);border:1px solid var(--border);border-radius:.6rem;padding:0}
+details.rv summary{cursor:pointer;padding:.9rem 1rem;font-weight:600;list-style:none;display:flex;justify-content:space-between;gap:1rem}
+details.rv summary::-webkit-details-marker{display:none}
+details.rv summary::after{content:"+";font-weight:800;color:var(--green);font-size:1.2rem;line-height:1}
+details.rv[open] summary::after{content:"−"}
+details.rv .body{padding:0 1rem 1rem}
+details.rv .simple{margin:0 0 .5rem}
+details.rv .ex{margin:0;font-size:.95rem;color:var(--muted)}
+details.rv .ex b{color:var(--ink)}
+
+/* Activity box */
+.act{background:var(--surface);border:2px solid var(--green);border-radius:.8rem;padding:1.25rem;margin:1rem 0}
+.act-title{font-weight:800;margin:0 0 .25rem;color:var(--green)}
+.act-top{display:flex;justify-content:space-between;align-items:baseline;gap:1rem;flex-wrap:wrap}
+.score{font-weight:600;font-size:.95rem}
+.item{border-top:1px solid var(--border);padding:1rem 0}
+.item:first-of-type{border-top:0}
+.item .txt{margin:0 0 .6rem;font-weight:600}
+.opts{display:flex;flex-wrap:wrap;gap:.5rem}
+.opt{background:var(--paper);border:1px solid var(--border);border-radius:.5rem;padding:.45rem .85rem;cursor:pointer;text-align:left}
+.opt:hover:not(:disabled){border-color:var(--green)}
+.opt:disabled{cursor:default}
+.opt.right{background:var(--ok-soft);border-color:var(--ok);color:var(--ok);font-weight:600}
+.opt.wrong{background:var(--bad-soft);border-color:var(--bad);color:var(--bad)}
+.fb{margin:.6rem 0 0;font-size:.95rem}
+.fb.ok b{color:var(--ok)} .fb.no b{color:var(--bad)}
+.reset{margin-top:.75rem;background:none;border:1px solid var(--border);border-radius:.5rem;padding:.35rem .8rem;cursor:pointer;font-size:.9rem}
+
+/* Steps */
+.steps .stage{min-height:9rem}
+.steps .snum{font-weight:800;color:var(--green);margin:0}
+.steps .slabel{font-size:1.3rem;font-weight:800;margin:.1rem 0 .5rem;line-height:1.3}
+.steps .sex{background:var(--green-soft);border-radius:.5rem;padding:.75rem 1rem;margin:.5rem 0 0}
+.stepnav{display:flex;align-items:center;gap:.75rem;margin-top:1rem;flex-wrap:wrap}
+.btn{background:var(--green);color:var(--green-ink);border:0;border-radius:.5rem;padding:.5rem 1rem;cursor:pointer;font-weight:600}
+.btn.ghost{background:none;color:var(--green);border:1px solid var(--green)}
+.btn:disabled{opacity:.4;cursor:default}
+.dots{display:flex;gap:.35rem;flex-wrap:wrap}
+.dot{width:.75rem;height:.75rem;border-radius:50%;border:2px solid var(--green);background:none;padding:0;cursor:pointer}
+.dot.on{background:var(--green)}
+
+/* Stage tabs */
+.stagebtns{display:flex;gap:.4rem;flex-wrap:wrap;margin-bottom:1rem}
+.stagebtn{border:1px solid var(--border);background:var(--paper);border-radius:.5rem;padding:.4rem .9rem;cursor:pointer;font-weight:600}
+.stagebtn[aria-pressed="true"]{background:var(--green);color:var(--green-ink);border-color:var(--green)}
+.stagefocus{font-size:1.2rem;font-weight:800;margin:0 0 .3rem}
+.meter{height:.6rem;border-radius:999px;background:var(--green-soft);overflow:hidden;margin:.75rem 0 .25rem}
+.meter i{display:block;height:100%;background:var(--green);transition:width .4s}
+.meterlbl{display:flex;justify-content:space-between;font-size:.85rem;color:var(--muted)}
+
+/* Bridge */
+.bridge{display:flex;flex-wrap:wrap;align-items:stretch;gap:.4rem}
+.bnode{flex:1 1 7.5rem;background:var(--paper);border:1px dashed var(--border);border-radius:.6rem;padding:.75rem;text-align:center;opacity:.35;transition:opacity .3s}
+.bnode.on{opacity:1;border-style:solid;border-color:var(--green)}
+.bnode .bl{font-size:.82rem;color:var(--muted);margin:0}
+.bnode .bw{font-size:1.4rem;font-weight:800;margin:.1rem 0 0;line-height:1.3}
+.barrow{align-self:center;color:var(--green);font-weight:800}
+
+/* Spiral bars */
+.bars{display:flex;align-items:flex-end;gap:.6rem;height:13rem;margin:1rem 0 .5rem;border-bottom:2px solid var(--border)}
+.bar{flex:1;background:var(--green);border-radius:.4rem .4rem 0 0;transition:height .5s;display:flex;align-items:flex-start;justify-content:center;color:var(--green-ink);font-weight:800;padding-top:.3rem;font-size:.9rem}
+.barlbls{display:flex;gap:.6rem}
+.barlbls div{flex:1;font-size:.9rem;line-height:1.4}
+.barlbls b{display:block}
+@media (prefers-reduced-motion: reduce){.bar,.meter i,.bnode{transition:none}}
+
+/* Compare table */
+.tablewrap{overflow-x:auto}
+table{border-collapse:collapse;width:100%;min-width:30rem;background:var(--surface);border-radius:.6rem;overflow:hidden}
+th,td{text-align:left;padding:.65rem .9rem;border-bottom:1px solid var(--border);vertical-align:top}
+th{background:var(--green-soft)}
+
+/* Two learners */
+.two{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+.lcard{background:var(--surface);border:1px solid var(--border);border-radius:.6rem;padding:1rem}
+.lcard h4{margin:0 0 .4rem;font-size:1.05rem}
+.lcard ul{margin:0;padding-left:1.2rem}
+
+/* Formula */
+.formula{display:flex;flex-wrap:wrap;align-items:center;gap:.5rem;margin:1rem 0}
+.fchip{background:var(--surface);border:2px solid var(--green);border-radius:.6rem;padding:.5rem .9rem;font-weight:700}
+.fchip.res{background:var(--green);color:var(--green-ink)}
+.fop{font-weight:800;font-size:1.4rem;color:var(--green)}
+
+/* Timeline */
+.tl{list-style:none;margin:0;padding:0;border-left:3px solid var(--green)}
+.tl li{position:relative;padding:0 0 1.25rem 1.25rem}
+.tl li::before{content:"";position:absolute;left:-.5rem;top:.45rem;width:.75rem;height:.75rem;border-radius:50%;background:var(--paper);border:3px solid var(--green)}
+.tl li.now::before{background:var(--green)}
+.tl .yr{font-weight:800;margin:0}
+.tl p{margin:0}
+.tl .tag{display:inline-block;font-size:.8rem;border:1px solid var(--border);border-radius:999px;padding:0 .5rem;margin-left:.4rem;color:var(--muted);font-weight:600}
+
+/* Note */
+.note{background:var(--surface);border:2px solid var(--pad-margin);border-radius:.6rem;padding:1rem 1.25rem;margin:1rem 0}
+.note .nt{font-weight:800;margin:0 0 .4rem;color:var(--pad-margin)}
+:root[data-theme="dark"] .note .nt{color:#FF9DAC}
+
+/* Checklist */
+.checks{display:grid;grid-template-columns:repeat(auto-fit,minmax(12rem,1fr));gap:.4rem;margin:.75rem 0 0}
+.checks label{display:flex;gap:.5rem;align-items:center;background:var(--paper);border:1px solid var(--border);border-radius:.5rem;padding:.4rem .7rem;cursor:pointer}
+.checks input{accent-color:var(--green);width:1.1rem;height:1.1rem}
+
+.pad-wrap{margin:2rem 0}
+.next-lesson{margin-top:3rem;display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap}
+
+footer{border-top:1px solid var(--border);padding:1.5rem 0 3rem;color:var(--muted);font-size:.9rem}
+
+@media (max-width:44rem){
+  .top-grid{grid-template-columns:1fr}
+  .two{grid-template-columns:1fr}
+  .bars{height:10rem}
+  .barlbls div{font-size:.78rem}
+}
+@media print{nav.lessons,.tools,.stepnav{display:none}}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="wrap top-grid">
+    <div>
+      <p class="course">3rd Year BSNED · Unit II</p>
+      <h1>The K to 12 Language and Literacy Curriculum</h1>
+      <p class="lede">Five short lessons. Each one gives you the big idea in plain words, an everyday comparison, and a quick activity you can answer as a class.</p>
+      <div class="tools">
+        <button class="tool" id="smaller" aria-label="Make text smaller">A−</button>
+        <button class="tool" id="bigger" aria-label="Make text bigger for projecting">A+</button>
+        <button class="tool" id="theme">Switch light/dark</button>
+      </div>
+    </div>
+    <div class="pad" aria-label="Lesson list">
+      <h3>Today's lessons</h3>
+      <ol id="toc"></ol>
+    </div>
+  </div>
+</header>
+
+<nav class="lessons" aria-label="Lessons">
+  <div class="wrap"><div class="tabs" role="tablist" id="tabs"></div></div>
+</nav>
+
+<main class="wrap" id="main"></main>
+
+<footer class="wrap">
+  Based on the course pack “II. The K to 12 Language and Literacy Curriculum.” Sample statements in the sorting activities are written for practice; check the official DepEd curriculum guides for exact competency wording.
+</footer>
+
+<script>
+/* ---------- CONTENT ---------- */
+const LESSONS = [
+{
+  short:"Framework",
+  title:"Curriculum Framework for the Language Arts and Multiliteracies",
+  blocks:[
+    {t:"idea",
+     big:"The curriculum wants learners who can actually use language — to understand, to express ideas, and to think — not just recite grammar rules.",
+     ana:"<strong>Think of it like driving.</strong> Knowing every traffic rule doesn't make you a driver. The curriculum wants drivers, not just people who passed the written test. That ability to use language well in real situations is called <b>communicative competence</b>."},
+    {t:"h", text:"The ideal graduate can…"},
+    {t:"list", items:[
+      "<b>Talk and write right for the situation</b> — you don't text your principal the way you text your barkada.",
+      "<b>Use language to think</b> — to reflect, question, and solve problems.",
+      "<b>Enjoy literature and culture</b> — both Philippine and world literature.",
+      "<b>Make sense of any kind of text</b> — printed, spoken, visual, and digital."]},
+
+    {t:"h", text:"What is “multiliteracies”?", sub:"From the New London Group (1996). The idea: reading today is much more than reading printed words."},
+    {t:"reveals", items:[
+      {title:"Reason 1: Multimodality", simple:"Meaning comes in many forms at once: words, pictures, sound, gestures, and space.", ex:"<b>Example:</b> To get a meme, you read the picture, the caption, <i>and</i> you need to know the joke behind it."},
+      {title:"Reason 2: Language and cultural diversity", simple:"Learners move between different languages and communities every day.", ex:"<b>Example:</b> Bisaya at home, Filipino with neighbors, English in school — all in one day."}]},
+    {t:"sort", title:"Quick sort: which reason is this?", how:"Read each situation aloud. Let the class vote, then tap the answer.",
+      bins:["Multimodality","Language & cultural diversity"],
+      items:[
+        {text:"A student reads an infographic about dengue that uses icons, colors, and short text.", bin:0, why:"Meaning comes from pictures, color, and words together."},
+        {text:"A child speaks Bisaya at home but is taught in English at school.", bin:1, why:"The learner moves between languages and communities."},
+        {text:"Watching a short video with captions, music, and a narrator.", bin:0, why:"Sound, moving images, and text all carry meaning."},
+        {text:"A learner switches to Filipino when talking with a classmate who just moved from Luzon.", bin:1, why:"Choosing a language based on who you're talking to is about linguistic diversity."}]},
+
+    {t:"steps", title:"The 4 parts of multiliteracies teaching", sub:"Follow one lesson — making a typhoon-safety poster — through all four. Easy way to remember: Experience → Teach → Question → Create.",
+      items:[
+        {label:"Situated practice", text:"Learn from real-life experience first.", ex:"Learners share what their families did during the last typhoon or flood."},
+        {label:"Overt instruction", text:"The teacher explains directly and clearly.", ex:"The teacher shows how a warning poster is built: a strong headline, short commands, and clear icons."},
+        {label:"Critical framing", text:"Question the text: who made it, for whom, and why? What's missing?", ex:"Learners compare two real advisories. Would a deaf neighbor or a lola who can't read English understand them?"},
+        {label:"Transformed practice", text:"Use what you learned to make something new.", ex:"Learners create their own safety poster in their home language for their barangay."}]},
+
+    {t:"h", text:"Six guiding principles", sub:"Tap each one. These describe how language should be taught."},
+    {t:"reveals", items:[
+      {title:"Spiral progression", simple:"Come back to the same skill, but go deeper each time.", ex:"<b>In class:</b> Grade 1 retells a story; Grade 6 analyzes it."},
+      {title:"Interaction", simple:"Language grows when you use it with other people.", ex:"<b>In class:</b> Pair talk, interviews, and group discussions, not just silent seatwork."},
+      {title:"Integration", simple:"Don't teach skills in separate boxes.", ex:"<b>In class:</b> Grammar is taught inside a reading or writing activity, not as a separate drill."},
+      {title:"Learner-centeredness", simple:"Start from what the learners need, like, and have experienced.", ex:"<b>In class:</b> Reading texts about topics your learners actually care about."},
+      {title:"Contextualization", simple:"Use what's familiar and local.", ex:"<b>In class:</b> Local stories, fiesta traditions, the sari-sari store, the jeepney ride to school."},
+      {title:"Construction", simple:"Learners build meaning themselves instead of just receiving it.", ex:"<b>In class:</b> Learners figure out a word's meaning from clues before the teacher explains it."}]},
+
+    {t:"h", text:"How the curriculum is organized"},
+    {t:"idea",
+     big:"Key stages: K–3, 4–6, 7–10, and 11–12. Each stage has its own standards.",
+     ana:"<strong>Think of cooking.</strong> The <b>content standard</b> is knowing the recipe (what learners should <i>know</i>). The <b>performance standard</b> is actually cooking the dish (what learners can <i>do</i> with it). The <b>learning competencies</b> are the small steps — chop, sauté, simmer — listed per grade and quarter."},
+    {t:"sort", title:"Know or do?", how:"Sample statements for practice. Is each one a content standard or a performance standard?",
+      bins:["Content standard (know)","Performance standard (do)"],
+      items:[
+        {text:"The learner demonstrates understanding of the elements of a story.", bin:0, why:"“Demonstrates understanding” is about knowing."},
+        {text:"The learner retells a story to the class in the correct order.", bin:1, why:"This is something the learner produces and does."},
+        {text:"The learner writes a short paragraph about a family tradition.", bin:1, why:"Writing a paragraph is a performance."},
+        {text:"The learner understands that a text has a main idea and supporting details.", bin:0, why:"This is knowledge about texts."}]},
+    {t:"p", html:"<b>Tracing a competency</b> means picking one strand (like reading comprehension) and following it through each key stage to see how it gets harder. You'll do this in Lesson 2's activity."},
+    {t:"note", title:"Current context: MATATAG", html:"DepEd has been phasing in the <b>MATATAG Curriculum</b> since SY 2024–2025. It has fewer competencies and a stronger focus on foundational literacy. Try comparing an older K to 12 guide with MATATAG: what was kept, merged, or removed?"},
+
+    {t:"quiz", qs:[
+      {q:"A learner memorized all the rules for subject-verb agreement but can't write a clear message to a teacher. What is missing?", opts:["Grammar knowledge","Communicative competence","Phonics"], a:1, why:"They know the rules but can't use language well in a real situation."},
+      {q:"Which of these is a multimodal text?", opts:["A spelling list","A YouTube explainer with narration and animation","A list of vocabulary words"], a:1, why:"It combines sound, images, movement, and words."},
+      {q:"Learners design a new poster for their barangay. Which part of multiliteracies teaching is this?", opts:["Overt instruction","Critical framing","Transformed practice"], a:2, why:"They apply what they learned to create something new."},
+      {q:"“What learners should be able to DO with their knowledge” describes…", opts:["Content standards","Performance standards","Key stages"], a:1, why:"Content = know. Performance = do."}]},
+    {t:"pad", title:"Talk about it", lines:["What was the last thing you “read” today that wasn't a book?","What did you need to understand it — words? pictures? sound? inside jokes?"]}
+  ]
+},
+{
+  short:"Macro skills",
+  title:"Macro Skills and the Domains of Literacy Development",
+  blocks:[
+    {t:"idea",
+     big:"There are five macro skills. Three are about taking language in, and two are about putting language out.",
+     ana:"<strong>Think of breathing.</strong> <b>Receptive</b> skills are breathing in: listening, reading, viewing. <b>Productive</b> skills are breathing out: speaking and writing. You need both."},
+    {t:"table", head:["Macro skill","Type","In plain words"], rows:[
+      ["Listening","Receptive (in)","Understanding what you hear"],
+      ["Reading","Receptive (in)","Getting meaning from written words"],
+      ["Viewing","Receptive (in)","Understanding pictures, videos, and media"],
+      ["Speaking","Productive (out)","Saying your ideas out loud"],
+      ["Writing","Productive (out)","Putting your ideas on paper or screen"]]},
+    {t:"p", html:"<b>Viewing</b> is the one K to 12 added to the traditional four. It connects to multiliteracies from Lesson 1. The skills are meant to be used together: one lesson can have learners listen to a story, talk about it, read a related text, watch a short clip, and write a response."},
+    {t:"sort", title:"In or out?", how:"Is the learner taking language in or putting it out?",
+      bins:["Receptive (in)","Productive (out)"],
+      items:[
+        {text:"Watching a short documentary about coral reefs", bin:0, why:"Viewing is receptive."},
+        {text:"Giving an oral report to the class", bin:1, why:"Speaking is productive."},
+        {text:"Listening to a radio drama", bin:0, why:"Listening is receptive."},
+        {text:"Writing a journal entry about the weekend", bin:1, why:"Writing is productive."},
+        {text:"Reading a comic strip", bin:0, why:"Reading (and viewing the pictures) are both receptive."}]},
+
+    {t:"h", text:"The domains of literacy", sub:"The curriculum breaks literacy into smaller parts called domains (or strands). They're clearest in the early grades. Here they are grouped to make them easier to remember."},
+    {t:"reveals", items:[
+      {title:"Sounds and letters", simple:"The building blocks of reading.", ex:"<b>Phonological awareness:</b> hearing sounds, rhymes, syllables.<br><b>Alphabet knowledge:</b> naming letters and their sounds.<br><b>Phonics and word recognition:</b> matching letters to sounds to read words.<br><b>Book and print knowledge:</b> how books work — front cover, reading left to right."},
+      {title:"Words and sentences", simple:"Knowing words and how they fit together.", ex:"<b>Oral language:</b> using words and sentences when speaking and listening.<br><b>Vocabulary development:</b> learning and using new words.<br><b>Grammar awareness:</b> how language is put together.<br><b>Spelling:</b> writing words correctly using sound–letter knowledge."},
+      {title:"Understanding meaning", simple:"Actually getting what a text says.", ex:"<b>Fluency:</b> reading accurately, at a good pace, with expression.<br><b>Reading comprehension:</b> understanding stories and informational texts.<br><b>Listening comprehension:</b> understanding spoken texts."},
+      {title:"Expressing and learning", simple:"Using literacy to create, to study, and to enjoy.", ex:"<b>Writing and composition:</b> expressing ideas in writing.<br><b>Study strategies:</b> finding, organizing, and using information.<br><b>Attitude toward language and literature:</b> loving to read.<br><i>Some guides also add handwriting and viewing comprehension.</i>"}]},
+    {t:"sort", title:"Name that domain", how:"Each classroom scene targets one domain. Pick the best fit.",
+      items:[
+        {text:"Children clap the syllables in “ba-na-na.”", opts:["Phonological awareness","Spelling","Fluency"], bin:0, why:"Hearing and breaking up sounds is phonological awareness."},
+        {text:"A learner shows where to start reading on a page and which way to turn it.", opts:["Alphabet knowledge","Book and print knowledge","Study strategies"], bin:1, why:"Knowing how books and print work."},
+        {text:"A learner sounds out /m/ /a/ /t/ to read “mat.”", opts:["Phonics and word recognition","Oral language","Vocabulary development"], bin:0, why:"Connecting letters to sounds to decode a word."},
+        {text:"A learner reads a paragraph aloud smoothly and with feeling.", opts:["Reading comprehension","Fluency","Grammar awareness"], bin:1, why:"Accuracy, speed, and expression = fluency."},
+        {text:"A learner uses a table of contents to find a topic.", opts:["Study strategies","Writing and composition","Book and print knowledge"], bin:0, why:"Locating and using information is a study strategy."},
+        {text:"A learner borrows books from the class library even without being asked.", opts:["Listening comprehension","Vocabulary development","Attitude toward language and literature"], bin:2, why:"This shows a love of reading."}]},
+
+    {t:"h", text:"How the focus shifts across key stages", sub:"Tap each key stage. This is the heart of “tracing strands.”"},
+    {t:"stages", items:[
+      {k:"K–3", focus:"Learning to read", m:10, text:"Foundations first: oral language, sounds, alphabet, phonics, and how print works. These are introduced <b>first in the mother tongue</b> — the bridge to Lesson 3."},
+      {k:"4–6", focus:"Reading to learn", m:40, text:"Fluency, vocabulary, understanding different kinds of texts, and composing. Reading becomes a tool for learning other subjects."},
+      {k:"7–10", focus:"Strands come together", m:70, text:"Listening, reading, and viewing comprehension; vocabulary; literature; writing; oral language and fluency; and grammar awareness."},
+      {k:"11–12", focus:"Academic and professional literacy", m:100, text:"Literacy for specific fields and for work, such as oral communication and reading and writing skills."}]},
+
+    {t:"pad", title:"Try in class (Outcome A)", lines:[
+      "1. Strand tracing matrix — groups pick one domain and pull one competency per key stage from the DepEd guide. How does it get harder?",
+      "2. Lesson analysis — look at a sample lesson plan. Which macro skills and domains does each activity target?",
+      "3. Text hunt — bring an ad, meme, or short video. What skills do you need to understand it?"]},
+    {t:"quiz", qs:[
+      {q:"Which macro skill was added by K to 12 to the traditional four?", opts:["Writing","Viewing","Listening"], a:1, why:"Viewing reflects today's visual and digital texts."},
+      {q:"Speaking and writing are called productive skills because…", opts:["They produce language","They are more important","They come first in K–3"], a:0, why:"You put language out — you produce it."},
+      {q:"In Grades 4–6, the focus shifts from “learning to read” to…", opts:["Learning to spell","Reading to learn","Learning to write"], a:1, why:"Reading becomes a tool for learning."},
+      {q:"Hearing that “cat” and “hat” rhyme belongs to which domain?", opts:["Phonological awareness","Alphabet knowledge","Grammar awareness"], a:0, why:"Rhymes and syllables are about sounds."}]}
+  ]
+},
+{
+  short:"Mother tongue",
+  title:"Mother Tongue-Based Multilingual Education and the Bridging Plan",
+  blocks:[
+    {t:"idea",
+     big:"Sometimes a child isn't struggling with the lesson. They're struggling with the language the lesson is taught in.",
+     ana:"<strong>Imagine taking your LET in Japanese.</strong> You know the content — but would your score show it? This is why this lesson matters so much for SNED teachers."},
+    {t:"h", text:"Key terms"},
+    {t:"reveals", items:[
+      {title:"Mother tongue", simple:"The language a child knows best or uses most — usually their first language.", ex:"<b>Careful:</b> It's not always the same as the language everyone in the community speaks. Learners in one class can have different home languages, different skill levels, and different cultures. Find out what language resources your learners actually have."},
+      {title:"MTB-MLE", simple:"Mother Tongue-Based Multilingual Education: using the learner's home language as a resource for learning while also building new languages.", ex:"<b>In the earlier framework:</b> the mother tongue was the language of instruction in the early grades, with Filipino and English developed alongside it (DepEd Order No. 74, s. 2009)."}]},
+    {t:"h", text:"Why use the language the learner knows?"},
+    {t:"reveals", items:[
+      {title:"Understanding", simple:"New ideas connect to words the child already knows.", ex:""},
+      {title:"Participation", simple:"The child can ask questions, explain, discuss, tell stories, and share experiences.", ex:""},
+      {title:"Concept development", simple:"The child learns the idea without also fighting an unfamiliar language.", ex:""},
+      {title:"Cultural connection", simple:"Language carries culture, values, local knowledge, and identity.", ex:""},
+      {title:"Learning more languages", simple:"A strong first language gives skills and strategies that transfer to the next language.", ex:""}]},
+
+    {t:"h", text:"Language bridging — the most important idea here", sub:"Bridging means helping learners carry what they already know from a familiar language into a new one. It's not word-for-word translation. The point: the same idea can have different names in different languages."},
+    {t:"bridge"},
+
+    {t:"h", text:"The L1–L2–L3 plan"},
+    {t:"p", html:"DepEd Order No. 74, s. 2009 included an MLE Bridging Plan. <b>L1</b> is the mother tongue, <b>L2</b> is Filipino, and <b>L3</b> is English. The key point: the teacher never throws away the child's first language when adding a new one. <b>What the learner already knows becomes a resource for learning more.</b>"},
+
+    {t:"h", text:"SNED case: Juan"},
+    {t:"juan"},
+
+    {t:"h", text:"Policy update: what's true now?", sub:"This is important for the LET and for real school practice."},
+    {t:"timeline", items:[
+      {yr:"2009", tag:"historical", text:"DepEd Order No. 74 institutionalizes MTB-MLE and includes the MLE Bridging Plan."},
+      {yr:"2013", tag:"historical", text:"RA 10533 (Enhanced Basic Education Act) builds the MTB-MLE framework into K to 12."},
+      {yr:"October 2024", tag:"current", text:"RA 12027 becomes law. It stops the <b>mandatory</b> use of mother tongue as medium of instruction in K–3. It can still be used optionally in qualifying monolingual classes."},
+      {yr:"SY 2025–2026", tag:"current", now:true, text:"DepEd Order No. 020, s. 2025: the main media of instruction for K–3 are <b>Filipino and English</b>, including <b>Filipino Sign Language</b> for deaf and hard-of-hearing learners. Regional languages may support learning through translanguaging. Qualifying schools may still use the learner's language in monolingual classes."}]},
+    {t:"note", title:"Remember the difference", html:"<b>Historical:</b> RA 10533 → MTB-MLE framework.<br><b>Current:</b> RA 12027 + DepEd Order No. 020, s. 2025 → revised language-of-instruction policy.<br>The <i>ideas</i> behind bridging (use what the learner knows) are still useful for teaching even though the policy changed."},
+
+    {t:"quiz", qs:[
+      {q:"What is language bridging?", opts:["Translating every word into English","Helping learners transfer what they know from a familiar language to a new one","Replacing the mother tongue with Filipino"], a:1, why:"Bridging carries concepts, words, and skills across languages."},
+      {q:"In the L1–L2–L3 framework, L1 refers to…", opts:["English","Filipino","The mother tongue"], a:2, why:"L1 = first language / mother tongue."},
+      {q:"A learner answers well in Bisaya but not in English. The safest conclusion is…", opts:["The learner has a reading disability","More information is needed before concluding anything","The learner is not trying"], a:1, why:"Don't confuse limited proficiency in the language of instruction with a disability."},
+      {q:"Under DepEd Order No. 020, s. 2025, what are the main media of instruction for K–3?", opts:["Mother tongue only","Filipino and English (plus FSL for deaf and hard-of-hearing learners)","English only"], a:1, why:"Regional languages can still support learning as auxiliary media."}]},
+    {t:"pad", title:"Talk about it", lines:["Think of a time you understood something better once it was explained in your own language.","What changed — the idea, or just the words?"]}
+  ]
+},
+{
+  short:"Spiral",
+  title:"Spiral Progression from Kindergarten to the Intermediate Grades",
+  blocks:[
+    {t:"idea",
+     big:"Spiral progression means coming back to the same skill again and again — but each time at a higher, harder level.",
+     ana:"<strong>Think of a spiral staircase.</strong> As you climb, you keep passing the same view out the window (the same skill), but each time you see it from a higher floor."},
+    {t:"h", text:"Spiral progression is not repetition", sub:"Toggle between the two and watch what happens to the difficulty."},
+    {t:"spiral"},
+    {t:"table", head:["Repetition","Spiral progression"], rows:[
+      ["Same task over and over","Same skill, revisited"],
+      ["Same difficulty","Gets more complex"],
+      ["Memorizing","Applying more deeply"],
+      ["Same context","New contexts"],
+      ["Same expected performance","More independence"]]},
+    {t:"p", html:"The exact competencies depend on the curriculum guide, but the principle stays the same: <b>earlier learning becomes the foundation for later, harder learning.</b>"},
+
+    {t:"h", text:"How language skills build up"},
+    {t:"stages", items:[
+      {k:"Kindergarten", focus:"Talking and hearing", m:20, text:"Oral language, vocabulary, listening, phonological awareness, and print awareness."},
+      {k:"Primary", focus:"Cracking the code", m:55, text:"Phonics, word recognition, fluency, comprehension, and basic composition."},
+      {k:"Intermediate", focus:"Going deeper", m:95, text:"Harder texts, more vocabulary, text analysis, organizing ideas, research and study skills, and more advanced speaking and writing."}]},
+
+    {t:"h", text:"Spiral progression in SNED", sub:"Learners may meet the same broad competency, but the teacher can change how they access it and how they show it."},
+    {t:"p", html:"<b>Grade-level goal:</b> Analyze a story."},
+    {t:"two", cards:[
+      {h:"Learner A", items:["Reads the story on their own","Identifies the theme","Cites evidence from the text","Writes an analysis"]},
+      {h:"Learner B", items:["Listens to an accessible version","Puts events in order","Identifies the characters","Chooses the theme from picture options","Explains orally or through AAC"]}]},
+    {t:"p", html:"Different paths, same destination: both learners are still working on the curriculum competency."},
+
+    {t:"h", text:"Same goal, different access"},
+    {t:"formula"},
+    {t:"sort", title:"Where does the support go?", how:"Teachers can adapt four things. Sort each support.",
+      bins:["Input","Process","Output","Environment"],
+      items:[
+        {text:"Reading the story aloud while showing pictures", bin:0, why:"Input = how information is presented."},
+        {text:"Letting the learner answer by pointing to picture choices", bin:2, why:"Output = how the learner shows understanding."},
+        {text:"Seating the learner away from the noisy door", bin:3, why:"Environment = the space around the learner."},
+        {text:"A peer buddy works through the graphic organizer with the learner", bin:1, why:"Process = how the learner engages with the material."},
+        {text:"Giving the text in large print", bin:0, why:"This changes how the information is presented."},
+        {text:"Allowing an oral answer instead of a written one", bin:2, why:"This changes how the learner responds."},
+        {text:"Breaking the task into small steps with guided practice", bin:1, why:"This changes how the learner works through it."},
+        {text:"Posting a predictable daily routine on the board", bin:3, why:"Routines are part of the learning environment."}]},
+    {t:"quiz", qs:[
+      {q:"Grade 1: retell with pictures. Grade 2: retell and identify key events. Grade 3: retell, sequence, and find the main idea. This shows…", opts:["Repetition","Spiral progression","Modification"], a:1, why:"Same skill, more complex each time."},
+      {q:"A teacher gives the exact same worksheet in Grades 1, 2, and 3. This is…", opts:["Spiral progression","Repetition","Differentiation"], a:1, why:"Same task, same difficulty."},
+      {q:"Allowing a learner to answer through AAC is an adaptation of…", opts:["Input","Output","Environment"], a:1, why:"It changes how the learner demonstrates understanding."}]},
+    {t:"pad", title:"Talk about it", lines:["Pick a skill you learned in elementary school.","How did it come back in high school — and how was it harder?"]}
+  ]
+},
+{
+  short:"Unpacking",
+  title:"Unpacking Learning Competencies for Adaptation",
+  blocks:[
+    {t:"idea",
+     big:"Unpacking means breaking one big competency into the smaller pieces of knowledge and skill hidden inside it.",
+     ana:"<strong>Think of a balikbayan box.</strong> From the outside it's just one big box. You only know what's inside once you open it and take things out one by one. Don't teach the competency right away — unpack it first."},
+    {t:"h", text:"The unpacking template", sub:"Step through a full example. Competency: “Identify the main idea of a short informational text.”"},
+    {t:"steps", title:"Unpacking, step by step", items:[
+      {label:"Competency", text:"What should the learner achieve?", ex:"Identify the main idea of a short informational text."},
+      {label:"Knowledge", text:"What does the learner need to know?", ex:"What a main idea is, and how it's different from a supporting detail."},
+      {label:"Skills", text:"What must the learner be able to do?", ex:"Access the text, spot important information, and figure out the central idea."},
+      {label:"Process", text:"What steps are involved?", ex:"Read or listen → notice what keeps coming up → ask “What is this mostly about?” → say it in one sentence."},
+      {label:"Product / performance", text:"What evidence shows learning?", ex:"The learner states or selects the main idea."},
+      {label:"Possible barrier", text:"What might block access?", ex:"The learner has difficulty decoding grade-level print."},
+      {label:"Adaptation", text:"What support removes the barrier?", ex:"Audio version, teacher read-aloud, accessible text, visual vocabulary, graphic organizer."},
+      {label:"Assessment", text:"How will learning be measured?", ex:"The learner may select the main idea, say it aloud, use AAC, point to a picture, or write it — depending on their abilities and what the task is really measuring."}]},
+
+    {t:"h", text:"Adaptation vs. modification", sub:"This is the most important distinction for SNED teachers."},
+    {t:"idea",
+     big:"Adaptation changes the road. Modification changes the destination.",
+     ana:"<strong>Think of going to the second floor.</strong> A ramp instead of stairs is an <b>adaptation</b> — you still reach the second floor. Deciding to stay on the first floor is a <b>modification</b> — the goal itself changed."},
+    {t:"two", cards:[
+      {h:"Adaptation (same goal)", items:["Enlarged text","Audio text","Visual supports","Extended time","AAC","Graphic organizers","Another way to respond"]},
+      {h:"Modification (changed goal)", items:["Grade-level goal: analyze a text's theme and support it with evidence","Modified goal: identify the main character","The second goal is much less complex — the outcome itself changed"]}]},
+    {t:"sort", title:"Road or destination?", how:"Does the support keep the same learning goal, or change it?",
+      bins:["Adaptation","Modification"],
+      items:[
+        {text:"Giving the text as an audio recording", bin:0, why:"Only the way the learner accesses the text changes."},
+        {text:"Allowing extra time on the test", bin:0, why:"Same task, same goal — more time."},
+        {text:"Instead of analyzing the theme, the learner only names the main character", bin:1, why:"The expected learning outcome is much simpler."},
+        {text:"The learner answers using an AAC device", bin:0, why:"The response mode changes, not the goal."},
+        {text:"Instead of explaining cause and effect, the learner answers three simple recall questions", bin:1, why:"The level and scope of learning changed."},
+        {text:"Using a graphic organizer to plan the answer", bin:0, why:"A support for the same task."}]},
+
+    {t:"h", text:"The adaptation decision process", sub:"Nine steps, in order. Follow Ana, a Grade 5 learner, through each one."},
+    {t:"steps", title:"Decision process", items:[
+      {label:"Identify the competency", text:"Start with what the curriculum expects.", ex:"Identify the main idea of a short informational text."},
+      {label:"Unpack the competency", text:"Break it into knowledge, skills, and performance.", ex:"Know what a main idea is; find important information; state the central idea."},
+      {label:"Identify the learner's strengths", text:"Always start with what the learner CAN do.", ex:"Ana listens well and has strong spoken vocabulary."},
+      {label:"Identify the barrier", text:"What's getting in the way?", ex:"Ana has difficulty decoding grade-level print."},
+      {label:"Determine the entry point", text:"Content, process, product, or environment?", ex:"Content — Ana needs another way to access the text."},
+      {label:"Select the adaptation", text:"Pick supports that remove the barrier.", ex:"Audio version, visual vocabulary, and a graphic organizer."},
+      {label:"Implement", text:"Try it in class.", ex:"The teacher reads aloud; Ana fills in the graphic organizer."},
+      {label:"Assess", text:"Check whether learning happened.", ex:"Ana states the main idea orally."},
+      {label:"Adjust", text:"Change what isn't working.", ex:"If Ana still struggles, add picture choices for the main idea."}]},
+
+    {t:"h", text:"Four entry points for adaptation", sub:"Each entry point asks a different question. (These match Input, Process, Output, and Environment from Lesson 4.)"},
+    {t:"reveals", items:[
+      {title:"Content", simple:"What does the learner need to access?", ex:"<b>Supports:</b> simpler presentation, vocabulary preview, visuals, accessible text."},
+      {title:"Process", simple:"How will the learner work with the content?", ex:"<b>Supports:</b> modeling, guided practice, peer support, multisensory activities, repeated practice."},
+      {title:"Product", simple:"How can the learner show what they learned?", ex:"<b>Supports:</b> oral answer, drawing, AAC, demonstration, written answer, digital presentation."},
+      {title:"Environment", simple:"What around the learner affects participation?", ex:"<b>Supports:</b> seating, noise, lighting, classroom set-up, assistive technology, predictable routines."}]},
+    {t:"quiz", qs:[
+      {q:"What should a teacher do BEFORE teaching a competency?", opts:["Give a test","Unpack it","Modify it"], a:1, why:"Unpack first to see the knowledge and skills inside."},
+      {q:"Which is an adaptation, not a modification?", opts:["Reducing an essay to one copied sentence","Providing an audio version of the text","Changing “analyze the theme” to “name the main character”"], a:1, why:"Audio changes access, not the goal."},
+      {q:"In the decision process, what comes right after identifying the barrier?", opts:["Determine the entry point","Assess","Unpack the competency"], a:0, why:"Once you know the barrier, decide where to adapt: content, process, product, or environment."},
+      {q:"Improving the lighting and reducing noise is an adaptation to…", opts:["Product","Content","Environment"], a:2, why:"These are conditions around the learner."}]},
+    {t:"pad", title:"Exit ticket: 3-2-1", lines:["3 things you learned across the five lessons","2 terms you can now explain to a classmate","1 question you still have"]}
+  ]
+}];
+
+/* ---------- STATE ---------- */
+const store = {
+  get(k,d){try{const v=localStorage.getItem(k);return v===null?d:JSON.parse(v)}catch(e){return d}},
+  set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}
+};
+let done = store.get("k12ll-done",{});
+let scale = store.get("k12ll-scale",1);
+document.documentElement.style.setProperty("--scale",scale);
+const savedTheme = store.get("k12ll-theme",null);
+if(savedTheme) document.documentElement.setAttribute("data-theme",savedTheme);
+
+/* ---------- HELPERS ---------- */
+const el=(tag,cls,html)=>{const e=document.createElement(tag);if(cls)e.className=cls;if(html!==undefined)e.innerHTML=html;return e};
+
+function actBox(title,how){
+  const box=el("div","act");
+  const top=el("div","act-top");
+  top.appendChild(el("p","act-title",title));
+  const sc=el("span","score");top.appendChild(sc);
+  box.appendChild(top);
+  if(how) box.appendChild(el("p","how",how));
+  return {box,sc};
+}
+
+function choiceSet(container,items,getOpts,onScore,label){
+  let right=0,answered=0;
+  const update=()=>{onScore(right,answered,items.length)};
+  items.forEach(it=>{
+    const row=el("div","item");
+    row.appendChild(el("p","txt",it.text||it.q));
+    const opts=el("div","opts");
+    const fb=el("p","fb");fb.hidden=true;
+    const answer=it.bin!==undefined?it.bin:it.a;
+    getOpts(it).forEach((o,i)=>{
+      const b=el("button","opt",o);b.type="button";
+      b.addEventListener("click",()=>{
+        opts.querySelectorAll("button").forEach(x=>x.disabled=true);
+        answered++;
+        if(i===answer){b.classList.add("right");right++;fb.className="fb ok";fb.innerHTML="<b>Correct.</b> "+it.why}
+        else{b.classList.add("wrong");opts.children[answer].classList.add("right");fb.className="fb no";fb.innerHTML="<b>Not quite — it's "+getOpts(it)[answer]+".</b> "+it.why}
+        fb.hidden=false;update();
+      });
+      opts.appendChild(b);
+    });
+    row.appendChild(opts);row.appendChild(fb);container.appendChild(row);
+  });
+  update();
+}
+
+/* ---------- BLOCK RENDERERS ---------- */
+const R={
+  idea(b){const d=el("div","idea");d.appendChild(el("p","big",b.big));d.appendChild(el("p","ana",b.ana));return d},
+  h(b){const f=document.createDocumentFragment();f.appendChild(el("h3","sec",b.text));if(b.sub)f.appendChild(el("p","sec-sub",b.sub));return f},
+  p(b){return el("p","",b.html)},
+  list(b){const u=el("ul","plain");b.items.forEach(i=>u.appendChild(el("li","",i)));return u},
+  reveals(b){
+    const g=el("div","reveals");
+    b.items.forEach(it=>{
+      const d=el("details","rv");
+      d.appendChild(el("summary","",it.title));
+      const body=el("div","body");
+      body.appendChild(el("p","simple",it.simple));
+      if(it.ex) body.appendChild(el("p","ex",it.ex));
+      d.appendChild(body);g.appendChild(d);
+    });return g},
+  sort(b){
+    const {box,sc}=actBox(b.title,b.how);
+    const list=el("div");box.appendChild(list);
+    const build=()=>{list.innerHTML="";choiceSet(list,b.items,it=>it.opts||b.bins,(r,a,n)=>{sc.textContent=a?`${r} of ${a} correct`:`${n} items`})};
+    build();
+    const rs=el("button","reset","Try again");rs.type="button";rs.addEventListener("click",build);box.appendChild(rs);
+    return box},
+  quiz(b,li){
+    const f=document.createDocumentFragment();
+    f.appendChild(el("h3","sec","Quick check"));
+    const {box,sc}=actBox("Quick check","Answer on your own first, then compare with a seatmate.");
+    const list=el("div");box.appendChild(list);
+    const build=()=>{list.innerHTML="";choiceSet(list,b.qs,it=>it.opts,(r,a,n)=>{
+      sc.textContent=a?`Score: ${r} / ${n}`:`${n} questions`;
+      if(a===n){done[li]=r+"/"+n;store.set("k12ll-done",done);renderNav();renderTOC()}
+    })};
+    build();
+    const rs=el("button","reset","Retake");rs.type="button";rs.addEventListener("click",build);box.appendChild(rs);
+    f.appendChild(box);return f},
+  steps(b){
+    const f=document.createDocumentFragment();
+    if(b.sub){f.appendChild(el("h3","sec",b.title));f.appendChild(el("p","sec-sub",b.sub))}
+    const {box,sc}=actBox(b.sub?"Click through":b.title,null);
+    box.classList.add("steps");
+    const stage=el("div","stage");box.appendChild(stage);
+    const nav=el("div","stepnav");
+    const prev=el("button","btn ghost","Previous");prev.type="button";
+    const next=el("button","btn","Next");next.type="button";
+    const dots=el("div","dots");
+    nav.append(prev,next,dots);box.appendChild(nav);
+    let i=0;
+    b.items.forEach((_,k)=>{const d=el("button","dot");d.type="button";d.setAttribute("aria-label","Go to step "+(k+1));d.addEventListener("click",()=>{i=k;show()});dots.appendChild(d)});
+    function show(){
+      const it=b.items[i];
+      stage.innerHTML="";
+      stage.appendChild(el("p","snum",`Step ${i+1} of ${b.items.length}`));
+      stage.appendChild(el("p","slabel",it.label));
+      stage.appendChild(el("p","",it.text));
+      stage.appendChild(el("p","sex","<b>Example:</b> "+it.ex));
+      prev.disabled=i===0;next.disabled=i===b.items.length-1;
+      [...dots.children].forEach((d,k)=>d.classList.toggle("on",k<=i));
+      sc.textContent="";
+    }
+    prev.addEventListener("click",()=>{if(i>0){i--;show()}});
+    next.addEventListener("click",()=>{if(i<b.items.length-1){i++;show()}});
+    show();f.appendChild(box);return f},
+  stages(b){
+    const {box}=actBox("Tap a stage",null);
+    const btns=el("div","stagebtns");box.appendChild(btns);
+    const out=el("div");box.appendChild(out);
+    const show=k=>{
+      [...btns.children].forEach((x,j)=>x.setAttribute("aria-pressed",j===k));
+      const it=b.items[k];
+      out.innerHTML=`<p class="stagefocus">${it.focus}</p><p>${it.text}</p><div class="meter" aria-hidden="true"><i style="width:${it.m}%"></i></div><div class="meterlbl"><span>Basic</span><span>Complex</span></div>`;
+    };
+    b.items.forEach((it,k)=>{const x=el("button","stagebtn",it.k);x.type="button";x.addEventListener("click",()=>show(k));btns.appendChild(x)});
+    show(0);return box},
+  table(b){
+    const w=el("div","tablewrap");
+    let h="<table><thead><tr>"+b.head.map(x=>`<th>${x}</th>`).join("")+"</tr></thead><tbody>";
+    b.rows.forEach(r=>h+="<tr>"+r.map(c=>`<td>${c}</td>`).join("")+"</tr>");
+    w.innerHTML=h+"</tbody></table>";return w},
+  note(b){const d=el("div","note");d.appendChild(el("p","nt",b.title));d.appendChild(el("p","",b.html));d.lastChild.style.margin=0;return d},
+  pad(b){
+    const w=el("div","pad-wrap");const p=el("div","pad");
+    p.appendChild(el("h3","",b.title));
+    b.lines.forEach(l=>p.appendChild(el("p","",l)));
+    w.appendChild(p);return w},
+  two(b){
+    const g=el("div","two");
+    b.cards.forEach(c=>{const d=el("div","lcard");d.appendChild(el("h4","",c.h));const u=el("ul");c.items.forEach(i=>u.appendChild(el("li","",i)));d.appendChild(u);g.appendChild(d)});
+    return g},
+  formula(){
+    const d=el("div","formula");
+    d.innerHTML=`<span class="fchip">Curriculum goal</span><span class="fop">+</span><span class="fchip">Learner needs</span><span class="fop">+</span><span class="fchip">Appropriate supports</span><span class="fop">=</span><span class="fchip res">Accessible instruction</span>`;
+    return d},
+  timeline(b){
+    const u=el("ul","tl");
+    b.items.forEach(it=>{const li=el("li",it.now?"now":"");li.innerHTML=`<p class="yr">${it.yr}<span class="tag">${it.tag}</span></p><p>${it.text}</p>`;u.appendChild(li)});
+    return u},
+  bridge(){
+    const {box}=actBox("Build the bridge: “plant”","Click Next to add each step. Ask the class for the word before revealing it.");
+    const nodes=[
+      ["Known idea (Bisaya)","tanom"],["Picture / real object","🌱"],["Filipino","halaman"],["English","plant"],["Use it in a sentence","The plant needs water."]];
+    const row=el("div","bridge");
+    nodes.forEach((n,k)=>{
+      if(k) row.appendChild(el("span","barrow","→"));
+      const d=el("div","bnode");d.innerHTML=`<p class="bl">${n[0]}</p><p class="bw">${n[1]}</p>`;row.appendChild(d);
+    });
+    box.appendChild(row);
+    const nav=el("div","stepnav");
+    const next=el("button","btn","Next");next.type="button";
+    const rs=el("button","btn ghost","Start over");rs.type="button";
+    nav.append(next,rs);box.appendChild(nav);
+    const msg=el("p","fb");msg.hidden=true;box.appendChild(msg);
+    let i=0;const ns=row.querySelectorAll(".bnode");
+    const show=()=>{ns.forEach((n,k)=>n.classList.toggle("on",k<i));next.disabled=i>=ns.length;
+      msg.hidden=i<ns.length;msg.innerHTML="<b>What we built:</b> concept knowledge + vocabulary + a connection across languages — instead of memorizing “plant” on its own."};
+    next.addEventListener("click",()=>{i++;show()});
+    rs.addEventListener("click",()=>{i=0;show()});
+    i=1;show();return box},
+  spiral(){
+    const {box}=actBox("Retelling a story, Grade 1 to later grades",null);
+    const btns=el("div","stagebtns");box.appendChild(btns);
+    const bars=el("div","bars");const lbls=el("div","barlbls");
+    box.append(bars,lbls);
+    const modes={
+      "Repetition":{h:[30,30,30,30],t:["Retell using pictures","Retell using pictures","Retell using pictures","Retell using pictures"]},
+      "Spiral progression":{h:[25,45,68,95],t:["Retell using pictures","Retell + identify key events","Retell, sequence, find the main idea","Analyze themes, viewpoints, and evidence"]}};
+    const grades=["Grade 1","Grade 2","Grade 3","Later grades"];
+    grades.forEach(()=>{bars.appendChild(el("div","bar"));lbls.appendChild(el("div"))});
+    const show=m=>{
+      [...btns.children].forEach(x=>x.setAttribute("aria-pressed",x.textContent===m));
+      modes[m].h.forEach((h,k)=>{bars.children[k].style.height=h+"%";lbls.children[k].innerHTML=`<b>${grades[k]}</b>${modes[m].t[k]}`});
+    };
+    Object.keys(modes).forEach(m=>{const x=el("button","stagebtn",m);x.type="button";x.addEventListener("click",()=>show(m));btns.appendChild(x)});
+    show("Repetition");return box},
+  juan(){
+    const {box}=actBox("What would you conclude?",null);
+    box.appendChild(el("p","","<b>Juan understands a story when his teacher explains it in his familiar language with pictures. When the same story is given only in English, he can't answer the comprehension questions.</b>"));
+    box.appendChild(el("p","","Does Juan have a reading comprehension disability?"));
+    const list=el("div");box.appendChild(list);
+    const after=el("div");after.hidden=true;box.appendChild(after);
+    choiceSet(list,[{q:"",opts:["Yes, clearly","No, definitely not","Not enough information yet"],a:2,why:"The problem could be the language of instruction, not his ability."}],it=>it.opts,(r,a)=>{if(a)after.hidden=false});
+    list.querySelector(".txt").remove();
+    after.innerHTML=`<p style="margin-top:1rem"><b>Before concluding anything, check these as a class:</b></p>`;
+    const c=el("div","checks");
+    ["Language proficiency","Vocabulary","Comprehension in each language","Decoding","Hearing and vision","Cognitive factors","Prior learning","Cultural context","Instructional conditions"].forEach(t=>{
+      const l=el("label");l.innerHTML=`<input type="checkbox"> ${t}`;c.appendChild(l)});
+    after.appendChild(c);
+    after.appendChild(el("div","note","<p class='nt'>Key SNED principle</p><p style='margin:0'>Don't confuse limited proficiency in the language of instruction with a disability.</p>"));
+    return box}
+};
+
+/* ---------- PAGE ---------- */
+const main=document.getElementById("main");
+const tabs=document.getElementById("tabs");
+const toc=document.getElementById("toc");
+let current=0;
+
+function renderNav(){
+  tabs.innerHTML="";
+  LESSONS.forEach((L,i)=>{
+    const t=el("button","tab",`<b>${i+1}</b>${L.short}${done[i]?'<span class="tick" aria-label="quiz done">✓</span>':""}`);
+    t.type="button";t.setAttribute("role","tab");t.setAttribute("aria-selected",i===current);
+    t.addEventListener("click",()=>go(i));tabs.appendChild(t);
+  });
+}
+function renderTOC(){
+  toc.innerHTML="";
+  LESSONS.forEach((L,i)=>{
+    const li=el("li",done[i]?"done":"");
+    const a=el("a","",L.short==="Framework"?"Curriculum framework":L.short==="Macro skills"?"Macro skills & literacy domains":L.short==="Mother tongue"?"Mother tongue & bridging":L.short==="Spiral"?"Spiral progression":"Unpacking competencies");
+    a.href="#lesson-"+(i+1);
+    a.addEventListener("click",e=>{e.preventDefault();go(i,true)});
+    li.appendChild(a);toc.appendChild(li);
+  });
+}
+function renderLesson(i){
+  const L=LESSONS[i];
+  main.innerHTML="";
+  const head=el("div","lesson-head");
+  head.appendChild(el("p","lesson-num",`Lesson ${i+1} of ${LESSONS.length}`));
+  head.appendChild(el("h2","",L.title));
+  main.appendChild(head);
+  L.blocks.forEach(b=>main.appendChild(R[b.t](b,i)));
+  const nx=el("div","next-lesson");
+  if(i>0){const p=el("button","btn ghost",`Back to Lesson ${i}`);p.type="button";p.addEventListener("click",()=>go(i-1,true));nx.appendChild(p)}else nx.appendChild(el("span"));
+  if(i<LESSONS.length-1){const n=el("button","btn",`Go to Lesson ${i+2}: ${LESSONS[i+1].short}`);n.type="button";n.addEventListener("click",()=>go(i+1,true));nx.appendChild(n)}
+  main.appendChild(nx);
+}
+function go(i,scroll){
+  current=i;renderNav();renderLesson(i);
+  try{history.replaceState(null,"","#lesson-"+(i+1))}catch(e){}
+  if(scroll) document.querySelector("nav.lessons").scrollIntoView({behavior:matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth"});
+}
+
+document.getElementById("bigger").addEventListener("click",()=>{scale=Math.min(1.6,+(scale+0.1).toFixed(2));document.documentElement.style.setProperty("--scale",scale);store.set("k12ll-scale",scale)});
+document.getElementById("smaller").addEventListener("click",()=>{scale=Math.max(0.8,+(scale-0.1).toFixed(2));document.documentElement.style.setProperty("--scale",scale);store.set("k12ll-scale",scale)});
+document.getElementById("theme").addEventListener("click",()=>{
+  const cur=document.documentElement.getAttribute("data-theme")||(matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light");
+  const nt=cur==="dark"?"light":"dark";document.documentElement.setAttribute("data-theme",nt);store.set("k12ll-theme",nt);
+});
+
+const m=location.hash.match(/lesson-(\d)/);
+current=m?Math.min(LESSONS.length-1,Math.max(0,+m[1]-1)):0;
+renderTOC();go(current);
+</script>
+</body>
+</html>
